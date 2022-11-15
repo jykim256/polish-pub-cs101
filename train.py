@@ -213,7 +213,7 @@ class WdsrTrainer(Trainer):
         learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-4, 5e-5]),
         nbit=16,
         fn_kernel=None,
-        loss=MeanAbsoluteError(),
+        loss=MeanSquaredError(),
     ):
         super().__init__(
             model,

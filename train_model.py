@@ -7,7 +7,7 @@ from optparse import OptionParser
 from data import RadioSky
 from model.wdsr import wdsr_b_uq
 from train import WdsrTrainer
-from BNN_loss import laplacian_loss
+from BNN_loss import gaussian_loss
 
 
 def main(
@@ -70,7 +70,7 @@ def main(
     trainer = WdsrTrainer(
         model=wdsr_b_uq_model,
         checkpoint_dir=f".ckpt/%s" % fnoutweights.strip(".h5"),
-        loss=laplacian_loss,
+        loss=gaussian_loss
     )
     print("Loaded in trainer")
 

@@ -60,3 +60,15 @@ def gradient_loss(y_true, y_pred):
     loss_1 = K.tf.reduce_mean(K.tf.reduce_mean(K.tf.reduce_mean(loss_1, 3), 2), 1)
     loss_2 = K.tf.reduce_mean(K.tf.reduce_mean(K.tf.reduce_mean(loss_2, 3), 2), 1)
     return loss_1 + loss_2
+
+
+def gaussian_loss(y_pred, y_true):
+  mean_true = y_true[:, :, :, 0]
+  mean_pred = y_pred[:, :, :, 0]
+  scale_pred = K.abs(y_pred[:, :, :, 1]) + tf.convert_to_tensor(1e-7)
+
+  #assume scale_pred is sigma squared
+  exponent = tf.math.multiply(-.5, tf.math.divide(K.pow(mean_true - mean_pred, 2), scale_pred))
+  coeff = K.log(scale_pred) 
+
+  return exponent + coeff 
