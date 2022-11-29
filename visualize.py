@@ -2,6 +2,26 @@ import matplotlib.pylab as plt
 import numpy as np
 import tensorflow as tf
 
+def plot_dictionary(data, cmap="afmhot"):
+    # data is in the following format
+    # Dictionary['plot title', Image], where Image is a 2D array
+    num_plots = len(data)
+    fig = plt.figure(figsize=(6 * num_plots, 6))
+    for plot_idx, (plot_title, image_data) in enumerate(data.items()):
+        ax = plt.subplot(1, num_plots, plot_idx + 1)
+        plt.title(plot_title, c="k", fontsize=17)
+        plt.imshow(
+            image_data,
+            cmap=cmap,
+            aspect="auto",
+            extent=[0, 1, 0, 1],
+        )
+        plt.axis("off")
+    plt.colorbar()
+    plt.tight_layout()
+    plt.show()
+
+
 
 def plot_reconstruction(
     datalr, datasr, datahr=None, datauq=None, vm=1, nsub=2, cmap="afmhot"
@@ -31,8 +51,6 @@ def plot_reconstruction(
     plt.imshow(
         np.squeeze(datalr),
         cmap=cmap,
-        vmax=vmaxlr,
-        vmin=vminlr,
         aspect="auto",
         extent=[0, 1, 0, 1],
     )
@@ -43,8 +61,6 @@ def plot_reconstruction(
     plt.imshow(
         np.squeeze(datasr),
         cmap=cmap,
-        vmax=vmaxsr,
-        vmin=vminsr,
         aspect="auto",
         extent=[0, 1, 0, 1],
     )
@@ -56,8 +72,6 @@ def plot_reconstruction(
         plt.imshow(
             np.squeeze(datahr),
             cmap=cmap,
-            vmax=vmaxsr,
-            vmin=vminsr,
             aspect="auto",
             extent=[0, 1, 0, 1],
         )
@@ -69,8 +83,6 @@ def plot_reconstruction(
         plt.imshow(
             np.squeeze(datauq),
             cmap=cmap,
-            vmax=vmaxsr,
-            vmin=np.max(datauq),
             aspect="auto",
             extent=[0, 1, 0, 1],
         )
@@ -80,8 +92,6 @@ def plot_reconstruction(
         plt.imshow(
             np.squeeze(np.log(datauq)),
             cmap=cmap,
-            vmax=vmaxsr,
-            vmin=np.max(np.log(datauq)),
             aspect="auto",
             extent=[0, 1, 0, 1],
         )
