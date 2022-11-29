@@ -154,7 +154,7 @@ class WdsrTrainer:
 
     def evaluate(self, dataset, nbit=16, show_image=False):
         return model.evaluate(
-            self.checkpoint.model, dataset, nbit=nbit, show_image=show_image
+            self.checkpoint.model, dataset, nbit=nbit, show_image=show_image, loss_name = self.loss.__name__
         )
 
     def restore(self):

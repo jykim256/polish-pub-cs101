@@ -1,3 +1,4 @@
+import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -36,7 +37,9 @@ def resolve16(model, lr_batch, nbit=16):
     return sr_batch
 
 
-def evaluate(model, dataset, nbit=8, show_image=False):
+def evaluate(model, dataset, nbit=8, show_image=False, loss_name=''):
+    # set datename to the current date and time in a string format
+    datename = model._name + '--' + loss_name + '--' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     psnr_values = []
     has_uq = "uq" in model._name
     lr_output, hr_output, sr_output, uq_output = None, None, None, None
@@ -63,17 +66,23 @@ def evaluate(model, dataset, nbit=8, show_image=False):
         plt.hist(sr_output.numpy().flatten(), bins=20)
         plt.yscale("log")
         plt.title("SR histogram")
+        fig = plt.gcf()
+        fig.savefig(f"{datename}-srhist.png", dpi=300, format='png')
         plt.show()
         print("SR min/max: ", np.min(sr_output.numpy()), np.max(sr_output.numpy()))
         plt.hist(hr_output.numpy().flatten(), bins=20)
         plt.yscale("log")
         plt.title("HR histogram")
+        fig = plt.gcf()
+        fig.savefig(f"{datename}-hrhist.png", dpi=300, format='png')
         plt.show()
         print("HR min/max: ", np.min(hr_output.numpy()), np.max(hr_output.numpy()))
         if has_uq:
             plt.hist(uq_output.numpy().flatten(), bins=20)
             plt.yscale("log")
             plt.title("Uncertainty histogram")
+            fig = plt.gcf()
+            fig.savefig(f"{datename}-uqhist.png", dpi=300, format='png')
             plt.show()
             print("UQ min/max: ", np.min(uq_output.numpy()), np.max(uq_output.numpy()))
     return tf.reduce_mean(psnr_values)
