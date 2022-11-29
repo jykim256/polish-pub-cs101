@@ -50,7 +50,14 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
     )
     psnr_values = []
     has_uq = "uq" in model._name
-    lr_output, hr_output, sr_output, uq_output, sr_raw_output, uq_raw_output = None, None, None, None, None, None
+    lr_output, hr_output, sr_output, uq_output, sr_raw_output, uq_raw_output = (
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    )
     for idx, (lr, hr) in enumerate(dataset):
         output, raw_output = resolve16(model, lr, nbit=nbit, get_raw=True)  # hack
         sr, uq = None, None
@@ -75,14 +82,15 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
             datalr=lr_output, datahr=hr_output, datasr=sr_output, datauq=uq_output
         )
 
-
         plt.hist(sr_raw_output.numpy().flatten(), bins=20)
         plt.yscale("log")
         plt.title("SR RAW histogram")
         fig = plt.gcf()
         fig.savefig(f"{datename}-srhist.png", dpi=300, format="png")
         plt.show()
-        print("SR min/max: ", np.min(sr_raw_output.numpy()), np.max(sr_raw_output.numpy()))
+        print(
+            "SR min/max: ", np.min(sr_raw_output.numpy()), np.max(sr_raw_output.numpy())
+        )
 
         plt.hist(sr_output.numpy().flatten(), bins=20)
         plt.yscale("log")
@@ -100,7 +108,6 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
         plt.show()
         print("HR min/max: ", np.min(hr_output.numpy()), np.max(hr_output.numpy()))
 
-
         if has_uq:
 
             plt.hist(uq_raw_output.numpy().flatten(), bins=20)
@@ -109,8 +116,11 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
             fig = plt.gcf()
             fig.savefig(f"{datename}-uqhist.png", dpi=300, format="png")
             plt.show()
-            print("UQ min/max: ", np.min(uq_raw_output.numpy()), np.max(uq_raw_output.numpy()))
-
+            print(
+                "UQ min/max: ",
+                np.min(uq_raw_output.numpy()),
+                np.max(uq_raw_output.numpy()),
+            )
 
             plt.hist(uq_output.numpy().flatten(), bins=20)
             plt.yscale("log")
