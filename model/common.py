@@ -21,7 +21,7 @@ def resolve(model, lr_batch):
     return sr_batch
 
 
-def resolve16(model, lr_batch, nbit=16):
+def resolve16(model, lr_batch, nbit=16, get_raw=False):
     if nbit == 8:
         casttype = tf.uint8
     elif nbit == 16:
@@ -30,10 +30,12 @@ def resolve16(model, lr_batch, nbit=16):
         print("Wrong number of bits")
         exit()
     lr_batch = tf.cast(lr_batch, tf.float32)
-    sr_batch = model(lr_batch)
-    sr_batch = tf.clip_by_value(sr_batch, 0, 2**nbit - 1)
+    sr_raw_batch = model(lr_batch)
+    sr_batch = tf.clip_by_value(sr_raw_batch, 0, 2**nbit - 1)
     sr_batch = tf.round(sr_batch)
     sr_batch = tf.cast(sr_batch, casttype)
+    if get_raw:
+        return sr_batch, sr_raw_batch
     return sr_batch
 
 
@@ -48,13 +50,16 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
     )
     psnr_values = []
     has_uq = "uq" in model._name
-    lr_output, hr_output, sr_output, uq_output = None, None, None, None
+    lr_output, hr_output, sr_output, uq_output, sr_raw_output, uq_raw_output = None, None, None, None, None, None
     for idx, (lr, hr) in enumerate(dataset):
-        output = resolve16(model, lr, nbit=nbit)  # hack
+        output, raw_output = resolve16(model, lr, nbit=nbit, get_raw=True)  # hack
         sr, uq = None, None
+        sr_raw, uq_raw = None, None
         if has_uq:
             sr = tf.expand_dims(output[:, :, :, 0], -1)
             uq = tf.expand_dims(output[:, :, :, 1], -1)
+            sr_raw = tf.expand_dims(raw_output[:, :, :, 0], -1)
+            uq_raw = tf.expand_dims(raw_output[:, :, :, 1], -1)
         else:
             if lr.shape[-1] == 1:
                 sr = output[..., 0, None]
@@ -63,11 +68,21 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
         # we only need to show one, just pick the first one
         if idx == 0:
             lr_output, hr_output, sr_output, uq_output = lr, hr, sr, uq
+            sr_raw, uq_raw = sr_raw, uq_raw
     if show_image:
         # plot images here
         plot_reconstruction(
             datalr=lr_output, datahr=hr_output, datasr=sr_output, datauq=uq_output
         )
+
+
+        plt.hist(sr_raw_output.numpy().flatten(), bins=20)
+        plt.yscale("log")
+        plt.title("SR RAW histogram")
+        fig = plt.gcf()
+        fig.savefig(f"{datename}-srhist.png", dpi=300, format="png")
+        plt.show()
+        print("SR min/max: ", np.min(sr_raw_output.numpy()), np.max(sr_raw_output.numpy()))
 
         plt.hist(sr_output.numpy().flatten(), bins=20)
         plt.yscale("log")
@@ -76,6 +91,7 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
         fig.savefig(f"{datename}-srhist.png", dpi=300, format="png")
         plt.show()
         print("SR min/max: ", np.min(sr_output.numpy()), np.max(sr_output.numpy()))
+
         plt.hist(hr_output.numpy().flatten(), bins=20)
         plt.yscale("log")
         plt.title("HR histogram")
@@ -83,7 +99,19 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
         fig.savefig(f"{datename}-hrhist.png", dpi=300, format="png")
         plt.show()
         print("HR min/max: ", np.min(hr_output.numpy()), np.max(hr_output.numpy()))
+
+
         if has_uq:
+
+            plt.hist(uq_raw_output.numpy().flatten(), bins=20)
+            plt.yscale("log")
+            plt.title("Uncertainty RAW histogram")
+            fig = plt.gcf()
+            fig.savefig(f"{datename}-uqhist.png", dpi=300, format="png")
+            plt.show()
+            print("UQ min/max: ", np.min(uq_raw_output.numpy()), np.max(uq_raw_output.numpy()))
+
+
             plt.hist(uq_output.numpy().flatten(), bins=20)
             plt.yscale("log")
             plt.title("Uncertainty histogram")
