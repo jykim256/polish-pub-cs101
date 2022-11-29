@@ -3,7 +3,7 @@ import tensorflow_addons as tfa
 from tensorflow.python.keras.layers import Add, Conv2D, Input, Lambda, ReLU
 from tensorflow.python.keras.models import Model
 
-from model.common import denormalize, normalize, pixel_shuffle
+from model.common import denormalize, normalize, pixel_shuffle, decenter
 
 
 def wdsr_b_uq(
@@ -49,6 +49,7 @@ def wdsr_b_uq(
 
     x = Add()([m, s])
     # x = Lambda(denormalize)(x)
+    x = Lambda(decenter)(x)
     x = ReLU()(x)
 
     return Model(x_in, x, name="wdsr_b_uq")

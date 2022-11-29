@@ -160,6 +160,8 @@ def denormalize(x, rgb_mean=DIV2K_RGB_MEAN, nbit=16):
     elif nbit == 16:
         return x * 2**15 + 2**15
 
+def decenter(x):
+    return x + 0.5
 
 def normalize_01(x):
     """Normalizes RGB images to [0, 1]."""
