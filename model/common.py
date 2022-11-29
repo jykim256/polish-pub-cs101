@@ -82,14 +82,14 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
             datalr=lr_output, datahr=hr_output, datasr=sr_output, datauq=uq_output
         )
 
-        plt.hist(sr_raw_output.numpy().flatten(), bins=20)
+        plt.hist(sr_raw.numpy().flatten(), bins=20)
         plt.yscale("log")
         plt.title("SR RAW histogram")
         fig = plt.gcf()
         fig.savefig(f"{datename}-srhist.png", dpi=300, format="png")
         plt.show()
         print(
-            "SR min/max: ", np.min(sr_raw_output.numpy()), np.max(sr_raw_output.numpy())
+            "SR min/max: ", np.min(sr_raw.numpy()), np.max(sr_raw.numpy())
         )
 
         plt.hist(sr_output.numpy().flatten(), bins=20)
@@ -110,7 +110,7 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
 
         if has_uq:
 
-            plt.hist(uq_raw_output.numpy().flatten(), bins=20)
+            plt.hist(uq_raw.numpy().flatten(), bins=20)
             plt.yscale("log")
             plt.title("Uncertainty RAW histogram")
             fig = plt.gcf()
@@ -118,8 +118,8 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
             plt.show()
             print(
                 "UQ min/max: ",
-                np.min(uq_raw_output.numpy()),
-                np.max(uq_raw_output.numpy()),
+                np.min(uq_raw.numpy()),
+                np.max(uq_raw.numpy()),
             )
 
             plt.hist(uq_output.numpy().flatten(), bins=20)
