@@ -64,15 +64,18 @@ def evaluate(model, dataset, nbit=8, show_image=False):
         plt.yscale("log")
         plt.title("SR histogram")
         plt.show()
+        print("SR min/max: ", np.min(sr_output.numpy()), np.max(sr_output.numpy()))
         plt.hist(hr_output.numpy().flatten(), bins=20)
         plt.yscale("log")
         plt.title("HR histogram")
         plt.show()
+        print("HR min/max: ", np.min(hr_output.numpy()), np.max(hr_output.numpy()))
         if has_uq:
             plt.hist(uq_output.numpy().flatten(), bins=20)
             plt.yscale("log")
             plt.title("Uncertainty histogram")
             plt.show()
+            print("UQ min/max: ", np.min(uq_output.numpy()), np.max(uq_output.numpy()))
     return tf.reduce_mean(psnr_values)
 
 

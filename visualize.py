@@ -2,6 +2,7 @@ import matplotlib.pylab as plt
 import numpy as np
 import tensorflow as tf
 
+
 def plot_dictionary(data, cmap="afmhot"):
     # data is in the following format
     # Dictionary['plot title', Image], where Image is a 2D array
@@ -20,7 +21,6 @@ def plot_dictionary(data, cmap="afmhot"):
     plt.colorbar()
     plt.tight_layout()
     plt.show()
-
 
 
 def plot_reconstruction(

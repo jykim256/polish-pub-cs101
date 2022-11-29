@@ -48,7 +48,6 @@ def wdsr_b_uq(
     s = Lambda(pixel_shuffle(scale))(s)
 
     x = Add()([m, s])
-    x = Lambda(denormalize)(x)
 
     return Model(x_in, x, name="wdsr_b_uq")
 

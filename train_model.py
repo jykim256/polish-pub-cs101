@@ -27,7 +27,7 @@ def main(
     num_res_blocks=32,
     batchsize=4,
     train_steps=10000,
-    loss = None,
+    loss=None,
 ):
 
     train_loader = RadioSky(
