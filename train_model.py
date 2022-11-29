@@ -27,6 +27,7 @@ def main(
     num_res_blocks=32,
     batchsize=4,
     train_steps=10000,
+    loss = None,
 ):
 
     train_loader = RadioSky(
@@ -71,16 +72,17 @@ def main(
 
     wdsr_b_uq_model = wdsr_b_uq(scale=scale, num_res_blocks=num_res_blocks, nchan=nchan)
     # current_loss = gaussian_normalized_exp
-    current_loss = gaussian_normalized_exp
+    if loss is None:
+        loss = gaussian_normalized_exp
     print("-" * 50)
     print("Model Architecture:")
     print(wdsr_b_uq_model.summary())
     print("-" * 50)
-    print("\n\nLoss function used: ", current_loss.__name__)
+    print("\n\nLoss function used: ", loss.__name__)
     print("\n\n" + "-" * 50)
     trainer = WdsrTrainer(
         model=wdsr_b_uq_model,
-        loss=current_loss,
+        loss=loss,
         checkpoint_dir=f".ckpt/%s" % fnoutweights.strip(".h5"),
     )
 
