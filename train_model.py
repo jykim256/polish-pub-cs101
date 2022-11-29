@@ -71,7 +71,7 @@ def main(
 
     wdsr_b_uq_model = wdsr_b_uq(scale=scale, num_res_blocks=num_res_blocks, nchan=nchan)
     # current_loss = gaussian_normalized_exp
-    current_loss = gaussian_denormalized_noexp
+    current_loss = gaussian_normalized_exp
     print("-" * 50)
     print("Model Architecture:")
     print(wdsr_b_uq_model.summary())
