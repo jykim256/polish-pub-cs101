@@ -13,6 +13,7 @@ from BNN_loss import (
 from data import RadioSky
 from model.wdsr import wdsr_b_uq
 from train import WdsrTrainer
+from tf.keras.optimizers.schedules import PiecewiseConstantDecay
 
 
 def main(
@@ -28,6 +29,7 @@ def main(
     batchsize=4,
     train_steps=10000,
     loss=None,
+    learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-3, 5e-4]),
 ):
 
     train_loader = RadioSky(
@@ -84,6 +86,7 @@ def main(
         model=wdsr_b_uq_model,
         loss=loss,
         checkpoint_dir=f".ckpt/%s" % fnoutweights.strip(".h5"),
+        learning_rate=learning_rate,
     )
 
     # Train WDSR B model for train_steps steps and evaluate model
