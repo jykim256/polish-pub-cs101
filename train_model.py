@@ -13,7 +13,7 @@ from BNN_loss import (
 from data import RadioSky
 from model.wdsr import wdsr_b_uq
 from train import WdsrTrainer
-from tf.keras.optimizers.schedules import PiecewiseConstantDecay
+from tensorflow.keras.optimizers.schedules import PiecewiseConstantDecay
 
 
 def main(
