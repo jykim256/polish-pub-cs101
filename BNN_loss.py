@@ -1,10 +1,11 @@
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
+from model.common import denormalize
 
 
 def laplacian_normalized_noexp(y_pred, y_true, show_parts=True):
-    mean_true = y_true[:, :, :, 0]
+    mean_true = tf.math.divide(y_true[:,:,:,0], 2**15)
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = K.pow(y_pred[:, :, :, 1], 2) + 1e-7
     if show_parts:
@@ -17,7 +18,7 @@ def laplacian_normalized_noexp(y_pred, y_true, show_parts=True):
     return loss
 
 def laplacian_normalized_exp(y_pred, y_true, show_parts=True):
-    mean_true = y_true[:, :, :, 0]
+    mean_true = tf.math.divide(y_true[:,:,:,0], 2**15)
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = y_pred[:, :, :, 1]
     if show_parts:
@@ -29,9 +30,9 @@ def laplacian_normalized_exp(y_pred, y_true, show_parts=True):
 
 
 def laplacian_denormalized_noexp(y_pred, y_true, show_parts=True):
-    mean_true = tf.math.scalar_mul(2**16, y_true[:, :, :, 0])
-    mean_pred = tf.math.scalar_mul(2**16, y_pred[:, :, :, 0])
-    scale_pred = tf.math.scalar_mul(2**16, y_pred[:, :, :, 1])
+    mean_true = y_true[:, :, :, 0]
+    mean_pred = denormalize(y_pred[:, :, :, 0])
+    scale_pred = denormalize(y_pred[:, :, :, 1])
     if show_parts:
         tf.print("top_loss", tf.math.reduce_mean(K.abs(mean_true - mean_pred)))
         tf.print("bottom_loss", tf.math.reduce_mean(scale_pred))
@@ -43,7 +44,7 @@ def laplacian_denormalized_noexp(y_pred, y_true, show_parts=True):
 
 
 def gaussian_normalized_exp(y_pred, y_true, show_parts=True):
-    mean_true = y_true[:, :, :, 0]
+    mean_true = tf.math.divide(y_true[:,:,:,0], 2**15)
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = y_pred[:, :, :, 1]
     if show_parts:
@@ -57,9 +58,9 @@ def gaussian_normalized_exp(y_pred, y_true, show_parts=True):
 
 
 def gaussian_denormalized_exp(y_pred, y_true, show_parts=True):
-    mean_true = tf.math.scalar_mul(2**16, y_true[:, :, :, 0])
-    mean_pred = tf.math.scalar_mul(2**16, y_pred[:, :, :, 0])
-    scale_pred = tf.math.scalar_mul(2**16, y_pred[:, :, :, 1])
+    mean_true = y_true[:, :, :, 0]
+    mean_pred = denormalize(y_pred[:, :, :, 0])
+    scale_pred = denormalize(y_pred[:, :, :, 1])
     if show_parts:
         tf.print("sqrt top_loss", tf.math.reduce_mean(K.abs(mean_true - mean_pred)))
         tf.print("bottom_loss", tf.math.reduce_mean(2 * K.exp(scale_pred)))
@@ -71,9 +72,9 @@ def gaussian_denormalized_exp(y_pred, y_true, show_parts=True):
 
 
 def gaussian_denormalized_noexp(y_pred, y_true, show_parts=True):
-    mean_true = tf.math.scalar_mul(2**16, y_true[:, :, :, 0])
-    mean_pred = tf.math.scalar_mul(2**16, y_pred[:, :, :, 0])
-    scale_pred = K.pow(tf.math.scalar_mul(2**16, y_pred[:, :, :, 1]), 2) + 1e-7
+    mean_true = y_true[:, :, :, 0]
+    mean_pred = denormalize(y_pred[:, :, :, 0])
+    scale_pred = K.pow(denormalize(y_pred[:, :, :, 1]), 2) + 1e-7
     if show_parts:
         tf.print("top_loss", tf.math.reduce_mean(K.abs(mean_true - mean_pred)))
         tf.print("bottom_loss", tf.math.reduce_mean((scale_pred)))
