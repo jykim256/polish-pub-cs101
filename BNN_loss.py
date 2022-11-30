@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
-from model.common import denormalize
+from model.common import decenternormalize
 
 
 def laplacian_normalized_noexp(y_pred, y_true, show_parts=True):
@@ -31,8 +31,8 @@ def laplacian_normalized_exp(y_pred, y_true, show_parts=True):
 
 def laplacian_denormalized_noexp(y_pred, y_true, show_parts=True):
     mean_true = y_true[:, :, :, 0]
-    mean_pred = denormalize(y_pred[:, :, :, 0])
-    scale_pred = denormalize(y_pred[:, :, :, 1])
+    mean_pred = decenternormalize(y_pred[:, :, :, 0])
+    scale_pred = decenternormalize(y_pred[:, :, :, 1])
     if show_parts:
         tf.print("top_loss", tf.math.reduce_mean(K.abs(mean_true - mean_pred)))
         tf.print("bottom_loss", tf.math.reduce_mean(scale_pred))
@@ -59,8 +59,8 @@ def gaussian_normalized_exp(y_pred, y_true, show_parts=True):
 
 def gaussian_denormalized_exp(y_pred, y_true, show_parts=True):
     mean_true = y_true[:, :, :, 0]
-    mean_pred = denormalize(y_pred[:, :, :, 0])
-    scale_pred = denormalize(y_pred[:, :, :, 1])
+    mean_pred = decenternormalize(y_pred[:, :, :, 0])
+    scale_pred = decenternormalize(y_pred[:, :, :, 1])
     if show_parts:
         tf.print("sqrt top_loss", tf.math.reduce_mean(K.abs(mean_true - mean_pred)))
         tf.print("bottom_loss", tf.math.reduce_mean(2 * K.exp(scale_pred)))
@@ -73,8 +73,8 @@ def gaussian_denormalized_exp(y_pred, y_true, show_parts=True):
 
 def gaussian_denormalized_noexp(y_pred, y_true, show_parts=True):
     mean_true = y_true[:, :, :, 0]
-    mean_pred = denormalize(y_pred[:, :, :, 0])
-    scale_pred = K.pow(denormalize(y_pred[:, :, :, 1]), 2) + 1e-7
+    mean_pred = decenternormalize(y_pred[:, :, :, 0])
+    scale_pred = K.pow(decenternormalize(y_pred[:, :, :, 1]), 2) + 1e-7
     if show_parts:
         tf.print("top_loss", tf.math.reduce_mean(K.abs(mean_true - mean_pred)))
         tf.print("bottom_loss", tf.math.reduce_mean((scale_pred)))
