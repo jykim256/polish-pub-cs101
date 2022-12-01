@@ -306,3 +306,4 @@ def conv2d_weightnorm(filters, kernel_size, padding="same", activation=None, **k
     return tfa.layers.WeightNormalization(
         Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs),
         data_init=False,
+    )
