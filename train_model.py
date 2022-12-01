@@ -11,7 +11,7 @@ from BNN_loss import (
     gaussian_normalized_noexp,
 )
 from data import RadioSky
-from model.wdsr import wdsr_b_uq
+from model.wdsr import wdsr_b_uq_norelu
 from train import WdsrTrainer
 from tensorflow.keras.optimizers.schedules import PiecewiseConstantDecay
 
@@ -72,7 +72,7 @@ def main(
         f".ckpt/%s" % fnoutweights.strip(".h5"),
     )
 
-    wdsr_b_uq_model = wdsr_b_uq(scale=scale, num_res_blocks=num_res_blocks, nchan=nchan)
+    wdsr_b_uq_model = wdsr_b_uq_norelu(scale=scale, num_res_blocks=num_res_blocks, nchan=nchan)
     # current_loss = gaussian_normalized_exp
     if loss is None:
         loss = gaussian_normalized_exp
