@@ -124,7 +124,7 @@ class WdsrTrainer:
                 if save_best_only and psnr_value <= ckpt.psnr:
                     self.now = time.perf_counter()
                     # skip saving checkpoint, no PSNR improvement
-                    continue
+                    # continue
 
                 ckpt.psnr = psnr_value
                 ckpt_mgr.save()
