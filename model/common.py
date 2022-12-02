@@ -81,7 +81,7 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
         plot_reconstruction(
             datalr=tf.image.adjust_gamma(lr_output, gamma=0.75),
             datahr=tf.image.adjust_gamma(hr_output, gamma=0.75),
-            datasr=tf.image.adjust_gamma(denormalize(sr_output), gamma=0.75),
+            datasr=tf.image.adjust_gamma(tf.cast(denormalize(sr_output), tf.uint16), gamma=0.75),
             datauq=uq_output,
         )
 
