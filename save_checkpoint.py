@@ -24,7 +24,7 @@ def save_model(
         checkpoint_dir=f".ckpt/%s" % fnoutweights.strip(".h5"),
     )
     print("Loaded in trainer")
-
+    print(tf.train.get_checkpoint_state('checkpoints').all_model_checkpoint_paths)
     trainer.restore()
     # Save weights to separate location.
     trainer.model.save_weights(fnoutweights)
