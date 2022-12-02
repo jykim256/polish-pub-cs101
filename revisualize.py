@@ -76,8 +76,8 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
     model.load_weights(fn_model)
     print('Model loaded')
     datalr = datalr[:, :, None]
-    print("datalrshape")
-    print(datalr.shape)
+    # print("datalrshape")
+    # print(datalr.shape)
     # datalr = tf.stack([datalr, datalr], axis=3)
 
     if len(datalr.shape) == 4:
