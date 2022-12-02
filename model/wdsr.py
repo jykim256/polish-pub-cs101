@@ -5,6 +5,7 @@ from tensorflow.python.keras.models import Model
 
 from model.common import denormalize, normalize, pixel_shuffle, decenter
 
+
 def wdsr_b_uq_norelu(
     scale,
     num_filters=32,
@@ -157,7 +158,6 @@ def wdsr_b_uq_norelu_mc(
     return Model(x_in, x, name="wdsr_b_uq_norelu_mc")
 
 
-
 def wdsr_b_uq_mc(
     scale,
     num_filters=32,
@@ -210,11 +210,10 @@ def wdsr_b_uq_mc(
 
     return Model(x_in, x, name="wdsr_b_uq_mc")
 
+
 def dropout_mc_wrapper(x, rate=0.15):
     # print('Dropout being used!')
     return tf.nn.dropout(x, rate)
-
-
 
 
 def wdsr_a(

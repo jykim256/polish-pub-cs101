@@ -5,7 +5,7 @@ from model.common import decenternormalize, normalize
 
 
 def laplacian_normalized_noexp(y_pred, y_true, show_parts=True):
-    mean_true = tf.math.divide(y_true[:,:,:,0], 2**15)
+    mean_true = tf.math.divide(y_true[:, :, :, 0], 2**15)
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = K.pow(y_pred[:, :, :, 1], 2) + 1e-7
     if show_parts:
@@ -17,15 +17,18 @@ def laplacian_normalized_noexp(y_pred, y_true, show_parts=True):
     )
     return loss
 
+
 def laplacian_normalized_exp(y_pred, y_true, show_parts=True):
-    mean_true = tf.math.divide(y_true[:,:,:,0], 2**15)
+    mean_true = tf.math.divide(y_true[:, :, :, 0], 2**15)
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = y_pred[:, :, :, 1]
     if show_parts:
         tf.print("top_loss", tf.math.reduce_mean(K.abs(mean_true - mean_pred)))
         tf.print("bottom_loss", tf.math.reduce_mean(2 * K.exp(scale_pred)))
         tf.print("coef_loss", tf.math.reduce_mean(tf.divide(scale_pred, 2)))
-    loss = tf.math.divide((K.abs(mean_true - mean_pred)), 2 * K.exp(scale_pred)) + tf.divide(scale_pred, 2)
+    loss = tf.math.divide(
+        (K.abs(mean_true - mean_pred)), 2 * K.exp(scale_pred)
+    ) + tf.divide(scale_pred, 2)
     return loss
 
 
@@ -44,7 +47,7 @@ def laplacian_denormalized_noexp(y_pred, y_true, show_parts=True):
 
 
 def gaussian_normalized_exp(y_pred, y_true, show_parts=True):
-    mean_true = normalize(y_true[:,:,:,0])
+    mean_true = normalize(y_true[:, :, :, 0])
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = y_pred[:, :, :, 1]
     if show_parts:
@@ -58,7 +61,7 @@ def gaussian_normalized_exp(y_pred, y_true, show_parts=True):
 
 
 def gaussian_true_normalized_exp(y_pred, y_true, show_parts=True):
-    mean_true = normalize(y_true[:,:,:,0])
+    mean_true = normalize(y_true[:, :, :, 0])
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = y_pred[:, :, :, 1]
     if show_parts:

@@ -79,7 +79,10 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
     if show_image:
         # plot images here
         plot_reconstruction(
-            datalr=lr_output, datahr=hr_output, datasr=denormalize(sr_output), datauq=uq_output
+            datalr=tf.image.adjust_gamma(lr_output, gamma=0.75),
+            datahr=tf.image.adjust_gamma(hr_output, gamma=0.75),
+            datasr=tf.image.adjust_gamma(denormalize(sr_output), gamma=0.75),
+            datauq=uq_output,
         )
 
         plt.hist(sr_raw.numpy().flatten(), bins=20)
@@ -88,9 +91,7 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
         fig = plt.gcf()
         fig.savefig(f"{datename}-srhist.png", dpi=300, format="png")
         plt.show()
-        print(
-            "SR min/max: ", np.min(sr_raw.numpy()), np.max(sr_raw.numpy())
-        )
+        print("SR min/max: ", np.min(sr_raw.numpy()), np.max(sr_raw.numpy()))
 
         plt.hist(sr_output.numpy().flatten(), bins=20)
         plt.yscale("log")
@@ -160,11 +161,14 @@ def denormalize(x, rgb_mean=DIV2K_RGB_MEAN, nbit=16):
     elif nbit == 16:
         return x * 2**15 + 2**15
 
+
 def decenter(x):
     return x + 1
 
+
 def decenternormalize(x):
     return x * 2**15
+
 
 def normalize_01(x):
     """Normalizes RGB images to [0, 1]."""

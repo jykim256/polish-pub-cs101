@@ -39,10 +39,12 @@ plt.rcParams.update(
 )
 
 
-def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16, regular_image=False):
+def reconstruct(
+    fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16, regular_image=False
+):
     if iter is None:
         iter = 1
-    print('Loading image from ', fn_img)
+    print("Loading image from ", fn_img)
     if fn_img.endswith("npy"):
         datalr = np.load(fn_img)[:, :]
     elif fn_img.endswith("png"):
@@ -60,7 +62,7 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
             # print('datalr shape', datalr.shape)
         except:
             return
-    print('Loading HR image from ', fnhr)
+    print("Loading HR image from ", fnhr)
     if fnhr is not None:
         if fnhr.endswith("npy"):
             datalr = np.load(fnhr)[:, :]
@@ -71,10 +73,10 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
                 return
     else:
         datahr = None
-    print('Loading model from ', fn_model)
+    print("Loading model from ", fn_model)
     model = model_struct(scale=scale, num_res_blocks=32)
     model.load_weights(fn_model)
-    print('Model loaded')
+    print("Model loaded")
     datalr = datalr[:, :, None]
     # print("datalrshape")
     # print(datalr.shape)
@@ -85,8 +87,10 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
         datalr = datalr[:, :, :, 0]
     srs = []
     for idx in range(iter):
-        print('Reconstructing image #%d' % idx)
-        output, datasr = resolve16(model, tf.expand_dims(datalr, axis=0), nbit=nbit, get_raw=True)  # hack
+        print("Reconstructing image #%d" % idx)
+        output, datasr = resolve16(
+            model, tf.expand_dims(datalr, axis=0), nbit=nbit, get_raw=True
+        )  # hack
         datasr = datasr.numpy()
         srs.append(datasr)
 
@@ -95,155 +99,150 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
 
     return datalr, datasr, datahr
 
+    # def plot_reconstruction(
+    #     datalr,
+    #     datasr,
+    #     datahr=None,
+    #     vm=1,
+    #     nsub=2,
+    #     cmap="afmhot",
+    #     regular_image=False,
+    #     mc_data=None,
+    # ):
+    #     """Plot the dirty image, POLISH reconstruction,
+    #     and (optionally) the high resolution true sky image
+    #     """
 
+    #     if nsub == 2:
+    #         fig = plt.figure(figsize=(10, 6))
+    #     if nsub == 3:
+    #         fig = plt.figure(figsize=(13, 6))
+    #     if mc_data is not None:
+    #         fig = plt.figure(figsize=(16, 6))
+    #     ax1 = plt.subplot(1, nsub, 1)
+    #     plt.title("Dirty map", color="C1", fontsize=17)
+    #     plt.axis("off")
+    #     if regular_image:
+    #         print("datalr shape", datalr.shape)
+    #         plt.imshow(tf.squeeze(datalr), cmap="RdBu")
+    #     else:
+    #         plt.imshow(
+    #             datalr[..., 0],
+    #             cmap=cmap,
+    #             vmax=vmaxlr,
+    #             vmin=vminlr,
+    #             aspect="auto",
+    #             extent=[0, 1, 0, 1],
+    #         )
+    #     plt.setp(ax1.spines.values(), color="C1")
 
-# def plot_reconstruction(
-#     datalr,
-#     datasr,
-#     datahr=None,
-#     vm=1,
-#     nsub=2,
-#     cmap="afmhot",
-#     regular_image=False,
-#     mc_data=None,
-# ):
-#     """Plot the dirty image, POLISH reconstruction,
-#     and (optionally) the high resolution true sky image
-#     """
+    #     ax2 = plt.subplot(1, nsub, 2, sharex=ax1, sharey=ax1)
+    #     plt.title("POLISH reconstruction", c="C2", fontsize=17)
+    #     if regular_image:
+    #         print("datasr shape", datasr.shape)
+    #         plt.imshow(tf.squeeze(datasr), cmap="RdBu")
+    #     else:
+    #         plt.imshow(
+    #             tf.squeeze(datasr),
+    #             cmap=cmap,
+    #             vmax=vmaxsr,
+    #             vmin=vminsr,
+    #             aspect="auto",
+    #             extent=[0, 1, 0, 1],
+    #         )
+    #     plt.axis("off")
 
-#     if nsub == 2:
-#         fig = plt.figure(figsize=(10, 6))
-#     if nsub == 3:
-#         fig = plt.figure(figsize=(13, 6))
-#     if mc_data is not None:
-#         fig = plt.figure(figsize=(16, 6))
-#     ax1 = plt.subplot(1, nsub, 1)
-#     plt.title("Dirty map", color="C1", fontsize=17)
-#     plt.axis("off")
-#     if regular_image:
-#         print("datalr shape", datalr.shape)
-#         plt.imshow(tf.squeeze(datalr), cmap="RdBu")
-#     else:
-#         plt.imshow(
-#             datalr[..., 0],
-#             cmap=cmap,
-#             vmax=vmaxlr,
-#             vmin=vminlr,
-#             aspect="auto",
-#             extent=[0, 1, 0, 1],
-#         )
-#     plt.setp(ax1.spines.values(), color="C1")
+    #     # print(np.sum(datahr))
+    #     # print(np.sum(mc_data))
 
-#     ax2 = plt.subplot(1, nsub, 2, sharex=ax1, sharey=ax1)
-#     plt.title("POLISH reconstruction", c="C2", fontsize=17)
-#     if regular_image:
-#         print("datasr shape", datasr.shape)
-#         plt.imshow(tf.squeeze(datasr), cmap="RdBu")
-#     else:
-#         plt.imshow(
-#             tf.squeeze(datasr),
-#             cmap=cmap,
-#             vmax=vmaxsr,
-#             vmin=vminsr,
-#             aspect="auto",
-#             extent=[0, 1, 0, 1],
-#         )
-#     plt.axis("off")
+    #     ax3 = plt.subplot(1, nsub, 3, sharex=ax1, sharey=ax1)
+    #     plt.title("True sky", c="k", fontsize=17)
+    #     plt.imshow(
+    #         tf.squeeze(datahr),
+    #         cmap=cmap,
+    #         vmax=vmaxsr,
+    #         vmin=vminsr,
+    #         aspect="auto",
+    #         extent=[0, 1, 0, 1],
+    #     )
+    #     plt.axis("off")
 
-#     # print(np.sum(datahr))
-#     # print(np.sum(mc_data))
+    #     if mc_data is not None:
+    #         ax4 = plt.subplot(1, nsub, 4, sharex=ax1, sharey=ax1)
+    #         plt.title("Uncertainty", c="k", fontsize=17)
+    #         plt.imshow(
+    #             tf.squeeze(mc_data),
+    #             cmap=cmap,
+    #             vmax=vmaxsr,
+    #             vmin=vminsr,
+    #             aspect="auto",
+    #             extent=[0, 1, 0, 1],
+    #         )
+    #         plt.axis("off")
 
-#     ax3 = plt.subplot(1, nsub, 3, sharex=ax1, sharey=ax1)
-#     plt.title("True sky", c="k", fontsize=17)
-#     plt.imshow(
-#         tf.squeeze(datahr),
-#         cmap=cmap,
-#         vmax=vmaxsr,
-#         vmin=vminsr,
-#         aspect="auto",
-#         extent=[0, 1, 0, 1],
-#     )
-#     plt.axis("off")
+    #     plt.tight_layout()
+    #     plt.colorbar()
+    #     plt.show()
 
-#     if mc_data is not None:
-#         ax4 = plt.subplot(1, nsub, 4, sharex=ax1, sharey=ax1)
-#         plt.title("Uncertainty", c="k", fontsize=17)
-#         plt.imshow(
-#             tf.squeeze(mc_data),
-#             cmap=cmap,
-#             vmax=vmaxsr,
-#             vmin=vminsr,
-#             aspect="auto",
-#             extent=[0, 1, 0, 1],
-#         )
-#         plt.axis("off")
+    # def main(
+    #     fn_img, fn_model, scale=4, fnhr=None, nbit=16, plotit=True, regular_image=False
+    # ):
+    #     datalr, datasr, datahr = reconstruct(
+    #         fn_img, fn_model, scale, fnhr, nbit, regular_image=regular_image
+    #     )
+    #     if datahr is not None:
+    #         nsub = 3
+    #     else:
+    #         nsub = 2
+    #     print(datalr.shape)
+    #     if plotit:
+    #         plot_reconstruction(
+    #             datalr,
+    #             datasr[:, :, 0],
+    #             datahr=datahr,
+    #             vm=1,
+    #             nsub=4,
+    #             regular_image=regular_image,
+    #             mc_data=datasr[:, :, 1],
+    #         )
 
-#     plt.tight_layout()
-#     plt.colorbar()
-#     plt.show()
+    # def main_mc_dropout(
+    #     fn_img,
+    #     fn_model,
+    #     scale=4,
+    #     fnhr=None,
+    #     nbit=16,
+    #     plotit=True,
+    #     regular_image=False,
+    #     num_iter=50,
+    # ):
+    #     datalr, datasr, datahr, mc_data = reconstruct_mc(
+    #         fn_img,
+    #         fn_model,
+    #         scale,
+    #         fnhr,
+    #         nbit,
+    #         regular_image=regular_image,
+    #         num_iter=num_iter,
+    #     )
+    #     if datahr is not None:
+    #         nsub = 3
+    #     else:
+    #         nsub = 2
+    #     if plotit:
+    #         mc_data = np.var(mc_data, axis=-1)
+    #         plot_reconstruction(
+    #             datalr,
+    #             datasr,
+    #             datahr=datahr,
+    #             vm=1,
+    #             nsub=4,
+    #             regular_image=regular_image,
+    #             mc_data=mc_data,
+    #         )
+    #     return mc_data
 
-
-# def main(
-#     fn_img, fn_model, scale=4, fnhr=None, nbit=16, plotit=True, regular_image=False
-# ):
-#     datalr, datasr, datahr = reconstruct(
-#         fn_img, fn_model, scale, fnhr, nbit, regular_image=regular_image
-#     )
-#     if datahr is not None:
-#         nsub = 3
-#     else:
-#         nsub = 2
-#     print(datalr.shape)
-#     if plotit:
-#         plot_reconstruction(
-#             datalr,
-#             datasr[:, :, 0],
-#             datahr=datahr,
-#             vm=1,
-#             nsub=4,
-#             regular_image=regular_image,
-#             mc_data=datasr[:, :, 1],
-#         )
-
-
-# def main_mc_dropout(
-#     fn_img,
-#     fn_model,
-#     scale=4,
-#     fnhr=None,
-#     nbit=16,
-#     plotit=True,
-#     regular_image=False,
-#     num_iter=50,
-# ):
-#     datalr, datasr, datahr, mc_data = reconstruct_mc(
-#         fn_img,
-#         fn_model,
-#         scale,
-#         fnhr,
-#         nbit,
-#         regular_image=regular_image,
-#         num_iter=num_iter,
-#     )
-#     if datahr is not None:
-#         nsub = 3
-#     else:
-#         nsub = 2
-#     if plotit:
-#         mc_data = np.var(mc_data, axis=-1)
-#         plot_reconstruction(
-#             datalr,
-#             datasr,
-#             datahr=datahr,
-#             vm=1,
-#             nsub=4,
-#             regular_image=regular_image,
-#             mc_data=mc_data,
-#         )
-#     return mc_data
-
-
-# if __name__ == "__main__":
+    # if __name__ == "__main__":
     # Example usage:
     # Generate images on training data:
     # for im in ./images/PSF-nkern64-4x/train/X4/*png;do python generate-hr.py $im ./weights-psf-4x.h5;done
