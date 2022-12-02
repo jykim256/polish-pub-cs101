@@ -39,7 +39,9 @@ plt.rcParams.update(
 )
 
 
-def reconstruct(fn_img, fn_model, model_struct, scale, fnhr=None, nbit=16, regular_image=False):
+def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16, regular_image=False):
+    if iter is None:
+        iter = 1
     print('Loading image from ', fn_img)
     if fn_img.endswith("npy"):
         datalr = np.load(fn_img)[:, :]
@@ -81,9 +83,16 @@ def reconstruct(fn_img, fn_model, model_struct, scale, fnhr=None, nbit=16, regul
     if len(datalr.shape) == 4:
         # datalr = datalr.squeeze()
         datalr = datalr[:, :, :, 0]
-    output, datasr = resolve16(model, datalr, nbit=nbit, get_raw=True)  # hack
+    srs = []
+    for idx in range(iter):
+        print('Reconstructing image #%d' % idx)
+        output, datasr = resolve16(model, datalr, nbit=nbit, get_raw=True)  # hack
+        datasr = datasr.numpy()
+        srs.append(datasr)
 
-    datasr = datasr.numpy()
+    datasr = np.array(srs)
+    datasr = np.mean(datasr, axis=0)
+
     return datalr, datasr, datahr
 
 
