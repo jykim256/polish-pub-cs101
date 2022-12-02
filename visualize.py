@@ -5,14 +5,16 @@ import tensorflow as tf
 
 def plot_dictionary(data, cmap="afmhot"):
     # data is in the following format
-    # Dictionary['plot title', Image], where Image is a 2D array
+    # Dictionary['plot title', (Image, minbound, maxbound)], where Image is a 2D array
     num_plots = len(data)
     fig = plt.figure(figsize=(6 * num_plots, 6))
-    for plot_idx, (plot_title, image_data) in enumerate(data.items()):
+    for plot_idx, (plot_title, (image_data, minbound, maxbound)) in enumerate(data.items()):
         ax = plt.subplot(1, num_plots, plot_idx + 1)
         plt.title(plot_title, c="k", fontsize=17)
         plt.imshow(
             image_data,
+            vmin=minbound,
+            vmax=maxbound,
             cmap=cmap,
             aspect="auto",
             extent=[0, 1, 0, 1],

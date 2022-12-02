@@ -91,6 +91,7 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
         srs.append(datasr)
 
     datasr = np.array(srs)
+    print(datasr.shape)
     datasr = np.mean(datasr, axis=0)
 
     return datalr, datasr, datahr
