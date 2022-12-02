@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
-from model.common import decenternormalize
+from model.common import decenternormalize, normalize
 
 
 def laplacian_normalized_noexp(y_pred, y_true, show_parts=True):
@@ -44,7 +44,7 @@ def laplacian_denormalized_noexp(y_pred, y_true, show_parts=True):
 
 
 def gaussian_normalized_exp(y_pred, y_true, show_parts=True):
-    mean_true = tf.math.divide(y_true[:,:,:,0], 2**15)
+    mean_true = normalize(y_true[:,:,:,0])
     mean_pred = y_pred[:, :, :, 0]
     scale_pred = y_pred[:, :, :, 1]
     if show_parts:
