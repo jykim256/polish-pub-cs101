@@ -79,7 +79,7 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
     if show_image:
         # plot images here
         plot_reconstruction(
-            datalr=lr_output, datahr=hr_output, datasr=sr_output, datauq=uq_output
+            datalr=lr_output, datahr=hr_output, datasr=denormalize(sr_output), datauq=uq_output
         )
 
         plt.hist(sr_raw.numpy().flatten(), bins=20)
