@@ -10,17 +10,10 @@ from train import WdsrTrainer
 
 
 def main(
-    images_dir,
-    caches_dir,
     fnoutweights,
-    ntrain=800,
-    nvalid=100,
     scale=4,
     nchan=1,
-    nbit=16,
     num_res_blocks=32,
-    batchsize=4,
-    train_steps=10000,
 ):
     print(
         "Note we are assuming the following model checkpoint:",
@@ -32,18 +25,7 @@ def main(
     )
     print("Loaded in trainer")
 
-    # Train WDSR B model for train_steps steps and evaluate model
-    # every 1000 steps on the first 10 images of the DIV2K
-    # validation set. Save a checkpoint only if evaluation
-    # PSNR has improved.
-
-    print("Evaluating...")
-
     trainer.restore()
-    # Evaluate model on full validation set.
-    # psnr = trainer.evaluate(valid_ds)
-    # print(f"PSNR = {psnr.numpy():3f}")
-
     # Save weights to separate location.
     trainer.model.save_weights(fnoutweights)
 
@@ -54,13 +36,6 @@ if __name__ == "__main__":
         version="",
         usage="%prog fname datestr specnum [OPTIONS]",
         description="Visualize and classify filterbank data",
-    )
-    parser.add_option(
-        "-c",
-        "--cachdir",
-        dest="caches_dir",
-        default=None,
-        help="directory with training/validation image data",
     )
     parser.add_option(
         "-f",
@@ -87,51 +62,11 @@ if __name__ == "__main__":
         default=32,
         help="number of residual blocks in neural network",
     )
-    parser.add_option(
-        "--nbit", dest="nbit", type=int, default=16, help="number of bits in image data"
-    )
-    parser.add_option(
-        "--train_steps",
-        dest="train_steps",
-        type=int,
-        default=100000,
-        help="number of training steps",
-    )
-    parser.add_option(
-        "--ntrain",
-        dest="ntrain",
-        type=int,
-        help="number of training images",
-        default=800,
-    )
-    parser.add_option(
-        "--nvalid",
-        dest="nvalid",
-        type=int,
-        help="number of validation images",
-        default=100,
-    )
-
     options, args = parser.parse_args()
-    images_dir = args[0]
-
-    if options.caches_dir is None:
-        if images_dir[-1] == "/":
-            caches_dir = images_dir[:1] + "-cache"
-        else:
-            caches_dir = images_dir + "-cache"
-    else:
-        caches_dir = options.caches_dir
 
     main(
-        images_dir,
-        caches_dir,
         options.fnout_model,
-        ntrain=options.ntrain,
-        nvalid=options.nvalid,
         scale=options.scale,
         nchan=options.nchan,
-        nbit=options.nbit,
         num_res_blocks=options.num_res_blocks,
-        train_steps=options.train_steps,
     )

@@ -6,7 +6,7 @@ import matplotlib.pylab as plt
 import time
 from model import resolve_single
 from utils import load_image, plot_sample
-from model.wdsr import wdsr_b, wdsr_mc, wdsr_b_uq
+from model.wdsr import *
 import numpy as np
 import tensorflow as tf
 
