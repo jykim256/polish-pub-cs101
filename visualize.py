@@ -18,7 +18,7 @@ def plot_dictionary(data, cmap="afmhot"):
             cmap=cmap,
             aspect="auto",
             extent=[0, 1, 0, 1],
-            interpolation='none'
+            # interpolation='none'
         )
         plt.axis("off")
     plt.colorbar()
