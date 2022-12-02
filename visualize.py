@@ -12,7 +12,7 @@ def plot_dictionary(data, cmap="afmhot"):
         ax = plt.subplot(1, num_plots, plot_idx + 1)
         plt.title(plot_title, c="k", fontsize=17)
         plt.imshow(
-            tf.squeeze(image_data),
+            tf.clip_by_value(tf.squeeze(image_data), minbound, maxbound),
             vmin=minbound,
             vmax=maxbound,
             cmap=cmap,
