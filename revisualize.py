@@ -40,6 +40,7 @@ plt.rcParams.update(
 
 
 def reconstruct(fn_img, fn_model, model_struct, scale, fnhr=None, nbit=16, regular_image=False):
+    print('Loading image from ', fn_img)
     if fn_img.endswith("npy"):
         datalr = np.load(fn_img)[:, :]
     elif fn_img.endswith("png"):
@@ -57,7 +58,7 @@ def reconstruct(fn_img, fn_model, model_struct, scale, fnhr=None, nbit=16, regul
             # print('datalr shape', datalr.shape)
         except:
             return
-
+    print('Loading HR image from ', fnhr)
     if fnhr is not None:
         if fnhr.endswith("npy"):
             datalr = np.load(fnhr)[:, :]
@@ -68,9 +69,10 @@ def reconstruct(fn_img, fn_model, model_struct, scale, fnhr=None, nbit=16, regul
                 return
     else:
         datahr = None
-
+    print('Loading model from ', fn_model)
     model = model_struct(scale=scale, num_res_blocks=32)
     model.load_weights(fn_model)
+    print('Model loaded')
     datalr = datalr[:, :, None]
     print("datalrshape")
     print(datalr.shape)
