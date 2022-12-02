@@ -88,11 +88,9 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
         print('Reconstructing image #%d' % idx)
         output, datasr = resolve16(model, tf.expand_dims(datalr, axis=0), nbit=nbit, get_raw=True)  # hack
         datasr = datasr.numpy()
-        print(datasr.shape)
         srs.append(datasr)
 
     datasr = np.array(srs)
-    print(datasr.shape)
     datasr = np.mean(datasr, axis=0)
 
     return datalr, datasr, datahr
