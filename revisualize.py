@@ -88,6 +88,7 @@ def reconstruct(fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16,
         print('Reconstructing image #%d' % idx)
         output, datasr = resolve16(model, datalr, nbit=nbit, get_raw=True)  # hack
         datasr = datasr.numpy()
+        print(datasr.shape)
         srs.append(datasr)
 
     datasr = np.array(srs)
