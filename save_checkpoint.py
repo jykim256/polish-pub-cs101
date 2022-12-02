@@ -9,7 +9,7 @@ from model.wdsr import wdsr_b, wdsr_b_uq
 from train import WdsrTrainer
 
 
-def main(
+def save_model(
     fnoutweights,
     scale=4,
     nchan=1,
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     )
     options, args = parser.parse_args()
 
-    main(
+    save_model(
         options.fnout_model,
         scale=options.scale,
         nchan=options.nchan,
