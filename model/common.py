@@ -77,11 +77,13 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
             lr_output, hr_output, sr_output, uq_output = lr, hr, sr, uq
             sr_raw, uq_raw = sr_raw, uq_raw
     if show_image:
+        denormal_sr = denormalize(sr_output)
+        gamma_sr = tf.image.adjust_gamma(denormal_sr, gamma=0.75)
         # plot images here
         plot_reconstruction(
             datalr=tf.image.adjust_gamma(lr_output, gamma=0.75),
             datahr=tf.image.adjust_gamma(hr_output, gamma=0.75),
-            datasr=tf.image.adjust_gamma(tf.cast(denormalize(sr_output), tf.uint16), gamma=0.75),
+            datasr=gamma_sr,
             datauq=uq_output,
         )
 
