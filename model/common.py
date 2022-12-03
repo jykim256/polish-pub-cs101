@@ -77,7 +77,7 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
             lr_output, hr_output, sr_output, uq_output = lr, hr, sr, uq
             sr_raw, uq_raw = sr_raw, uq_raw
     if show_image:
-        denormal_sr = denormalize(sr_output)
+        denormal_sr = denormalize(tf.dtypes.cast(sr_output, tf.float32))
         gamma_sr = tf.image.adjust_gamma(denormal_sr, gamma=0.75)
         # plot images here
         plot_reconstruction(
