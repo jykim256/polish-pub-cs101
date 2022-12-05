@@ -1,14 +1,15 @@
+import optparse
 import os
 import sys
-
-import optparse
-import matplotlib.pylab as plt
 import time
-from model import resolve16, resolve_single
-from utils import load_image, plot_sample
-from model.wdsr import *
+
+import matplotlib.pylab as plt
 import numpy as np
 import tensorflow as tf
+
+from model import resolve16, resolve_single
+from model.wdsr import *
+from utils import load_image, plot_sample
 
 vminlr = 0
 vmaxlr = 22500

@@ -1,1 +1,1 @@
-from model.common import evaluate, resolve, resolve_single, resolve16
+from model.common import evaluate, resolve, resolve16, resolve_single

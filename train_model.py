@@ -3,6 +3,7 @@ from optparse import OptionParser
 
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.optimizers.schedules import PiecewiseConstantDecay
 
 from BNN_loss import (
     gaussian_denormalized_exp,
@@ -13,7 +14,6 @@ from BNN_loss import (
 from data import RadioSky
 from model.wdsr import wdsr_b_uq_norelu
 from train import WdsrTrainer
-from tensorflow.keras.optimizers.schedules import PiecewiseConstantDecay
 
 
 def main(

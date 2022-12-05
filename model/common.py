@@ -1,9 +1,10 @@
 import datetime
+
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 
-from visualize import plot_reconstruction
+from visualize import plot_dictionary, plot_reconstruction
 
 DIV2K_RGB_MEAN = np.array([0.4488, 0.4371, 0.4040]) * 255
 
@@ -77,15 +78,29 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
             lr_output, hr_output, sr_output, uq_output = lr, hr, sr, uq
             sr_raw, uq_raw = sr_raw, uq_raw
     if show_image:
-        denormal_sr = denormalize(tf.dtypes.cast(sr_output, tf.float32))
-        gamma_sr = tf.image.adjust_gamma(denormal_sr, gamma=0.75)
-        # plot images here
-        plot_reconstruction(
-            datalr=tf.image.adjust_gamma(lr_output, gamma=0.75),
-            datahr=tf.image.adjust_gamma(hr_output, gamma=0.75),
-            datasr=gamma_sr,
-            datauq=uq_output,
+        plot_dictionary(
+            {
+                "Dirty Map",
+                (lr_output, 0, 2**16),
+                "Reconstruction Map",
+                (denormalize(tf.dtypes.cast(sr_output, tf.float32)), 0, 2**16),
+                "True Sky Map",
+                (hr_output, 0, 2**16),
+                "Uncertainty Map",
+                (uq_output, 0, 2**16),
+            },
+            gamma=0.75,
         )
+
+        # denormal_sr = denormalize(tf.dtypes.cast(sr_output, tf.float32))
+        # gamma_sr = tf.image.adjust_gamma(denormal_sr, gamma=0.75)
+        # # plot images here
+        # plot_reconstruction(
+        #     datalr=tf.image.adjust_gamma(lr_output, gamma=0.75),
+        #     datahr=tf.image.adjust_gamma(hr_output, gamma=0.75),
+        #     datasr=gamma_sr,
+        #     datauq=uq_output,
+        # )
 
         plt.hist(sr_raw.numpy().flatten(), bins=20)
         plt.yscale("log")

@@ -3,14 +3,18 @@ import numpy as np
 import tensorflow as tf
 
 
-def plot_dictionary(data, cmap="afmhot"):
+def plot_dictionary(data, cmap="afmhot", gamma=None):
     # data is in the following format
     # Dictionary['plot title', (Image, minbound, maxbound)], where Image is a 2D array
     num_plots = len(data)
     fig = plt.figure(figsize=(6 * num_plots, 6))
-    for plot_idx, (plot_title, (image_data, minbound, maxbound)) in enumerate(
+    for plot_idx, (plot_title, (image_data_raw, minbound, maxbound)) in enumerate(
         data.items()
     ):
+        if gamma is not None:
+            image_data = tf.image.adjust_gamma(image_data_raw, gamma=gamma)
+        else:
+            image_data = image_data_raw
         if minbound == maxbound:
             minbound = np.min(image_data)
             maxbound = np.max(image_data)
@@ -29,8 +33,6 @@ def plot_dictionary(data, cmap="afmhot"):
         plt.colorbar()
     plt.tight_layout()
     plt.show()
-
-
 
 
 def plot_reconstruction(

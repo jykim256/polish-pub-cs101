@@ -3,7 +3,7 @@ import tensorflow_addons as tfa
 from tensorflow.python.keras.layers import Add, Conv2D, Input, Lambda, ReLU
 from tensorflow.python.keras.models import Model
 
-from model.common import denormalize, normalize, pixel_shuffle, decenter
+from model.common import decenter, denormalize, normalize, pixel_shuffle
 
 
 def wdsr_b_uq_norelu(

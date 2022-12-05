@@ -1,8 +1,8 @@
 import sys
+from optparse import OptionParser
 
 import numpy as np
 import tensorflow as tf
-from optparse import OptionParser
 
 from data import RadioSky
 from model.wdsr import wdsr_b, wdsr_b_uq
