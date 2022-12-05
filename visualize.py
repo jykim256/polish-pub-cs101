@@ -23,9 +23,11 @@ def plot_dictionary(data, cmap="afmhot"):
             # interpolation='none'
         )
         plt.axis("off")
-    plt.colorbar()
+        plt.colorbar()
     plt.tight_layout()
     plt.show()
+
+
 
 
 def plot_reconstruction(
