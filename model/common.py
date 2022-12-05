@@ -80,13 +80,13 @@ def evaluate(model, dataset, nbit=8, show_image=False, loss_name=""):
     if show_image:
         plot_dictionary(
             {
-                "Dirty Map",
+                "Dirty Map":
                 (lr_output, 0, 2**16),
-                "Reconstruction Map",
+                "Reconstruction Map":
                 (denormalize(tf.dtypes.cast(sr_output, tf.float32)), 0, 2**16),
-                "True Sky Map",
+                "True Sky Map":
                 (hr_output, 0, 2**16),
-                "Uncertainty Map",
+                "Uncertainty Map":
                 (uq_output, 0, 2**16),
             },
             gamma=0.75,
