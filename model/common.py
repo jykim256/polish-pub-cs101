@@ -174,9 +174,9 @@ def normalize(x, rgb_mean=DIV2K_RGB_MEAN, nbit=16):
 
 def denormalize(x, rgb_mean=DIV2K_RGB_MEAN, nbit=16):
     if nbit == 8:
-        return x * 127.5 + rgb_mean
+        return tf.dtypes.cast(x, tf.float32) * 127.5 + rgb_mean
     elif nbit == 16:
-        return x * 2**15 + 2**15
+        return tf.dtypes.cast(x, tf.float32) * 2**15 + 2**15
 
 
 def decenter(x):
