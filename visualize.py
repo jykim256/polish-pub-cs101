@@ -12,7 +12,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None):
         data.items()
     ):
         if gamma is not None:
-            image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_raw, tf.uint16), gamma=gamma)
+            image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_raw, tf.int32), gamma=gamma)
         else:
             image_data = image_data_raw
         if minbound == maxbound:
