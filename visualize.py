@@ -18,6 +18,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None):
         if minbound == maxbound:
             minbound = np.min(image_data)
             maxbound = np.max(image_data)
+            print(f" {plot_title} minbound = {minbound}, maxbound = {maxbound}")
         ax = plt.subplot(1, num_plots, plot_idx + 1)
         plt.title(plot_title, c="k", fontsize=17)
         plt.imshow(
