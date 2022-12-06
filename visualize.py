@@ -16,6 +16,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
             image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_clipped, tf.int32), gamma=gamma)
         else:
             image_data = image_data_clipped
+            minbound, maxbound = tuple(tf.image.adjust_gamma(np.array([int(minbound), int(maxbound)]), gamma=gamma).numpy())
         if minbound == maxbound:
             minbound = np.min(image_data)
             maxbound = np.max(image_data)
