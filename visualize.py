@@ -8,7 +8,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3):
     # Dictionary['plot title', (Image, minbound, maxbound)], where Image is a 2D array
     num_plots = len(data)
     num_rows = int(np.ceil(num_plots / num_columns))
-    fig = plt.figure(figsize=(6 * num_plots, 6))
+    fig = plt.figure(figsize=(6 * num_columns, 6 * num_rows))
     for plot_idx, (plot_title, (image_data_raw, minbound, maxbound)) in enumerate(
         data.items()
     ):
