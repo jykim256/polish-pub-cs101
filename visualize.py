@@ -11,11 +11,10 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
     for plot_idx, (plot_title, (image_data_raw, minbound, maxbound)) in enumerate(
         data.items()
     ):
-        image_data_clipped = tf.squeeze(tf.clip_by_value(image_data_raw, minbound, maxbound))
         if gamma is not None:
-            image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_clipped, tf.int32), gamma=gamma)
+            image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_raw, tf.int32), gamma=gamma)
         else:
-            image_data = image_data_clipped
+            image_data = image_data_raw
             minbound, maxbound = tuple(tf.image.adjust_gamma(np.array([int(minbound), int(maxbound)]), gamma=gamma).numpy())
         if minbound == maxbound:
             minbound = np.min(image_data)
@@ -24,7 +23,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
         ax = plt.subplot(1, num_plots, plot_idx + 1)
         plt.title(plot_title, c="k", fontsize=17)
         plt.imshow(
-            image_data,
+            tf.squeeze(tf.clip_by_value(image_data, minbound, maxbound)),
             vmin=minbound,
             vmax=maxbound,
             cmap=cmap,
