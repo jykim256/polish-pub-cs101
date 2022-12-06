@@ -11,7 +11,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
     for plot_idx, (plot_title, (image_data_raw, minbound, maxbound)) in enumerate(
         data.items()
     ):
-        image_data_clipped = tf.clip_by_value(tf.squeeze(image_data_raw), minbound, maxbound),
+        image_data_clipped = tf.squeeze(tf.clip_by_value(image_data_raw, minbound, maxbound))
         if gamma is not None:
             image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_clipped, tf.int32), gamma=gamma)
         else:
