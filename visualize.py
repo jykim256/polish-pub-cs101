@@ -3,10 +3,11 @@ import numpy as np
 import tensorflow as tf
 
 
-def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
+def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3):
     # data is in the following format
     # Dictionary['plot title', (Image, minbound, maxbound)], where Image is a 2D array
     num_plots = len(data)
+    num_rows = int(np.ceil(num_plots / num_columns))
     fig = plt.figure(figsize=(6 * num_plots, 6))
     for plot_idx, (plot_title, (image_data_raw, minbound, maxbound)) in enumerate(
         data.items()
@@ -20,7 +21,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
             minbound = np.min(image_data)
             maxbound = np.max(image_data)
             print(f" {plot_title} minbound = {minbound}, maxbound = {maxbound}")
-        ax = plt.subplot(1, num_plots, plot_idx + 1)
+        ax = plt.subplot(num_rows, num_columns, plot_idx + 1)
         plt.title(plot_title, c="k", fontsize=17)
         plt.imshow(
             tf.squeeze(tf.clip_by_value(image_data, minbound, maxbound)),
