@@ -25,6 +25,8 @@ def save_model(
     )
     print("Loaded in trainer")
     print(trainer.checkpoint_manager.checkpoints)
+    if len(trainer.checkpoint_manager.checkpoints) == 0:
+        print("NO MODEL CHECKPOINT FOUND!")
     trainer.restore()
     # Save weights to separate location.
     trainer.model.save_weights(fnoutweights)
