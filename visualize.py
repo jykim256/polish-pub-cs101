@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 
-def plot_dictionary(data, cmap="afmhot", gamma=None):
+def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
     # data is in the following format
     # Dictionary['plot title', (Image, minbound, maxbound)], where Image is a 2D array
     num_plots = len(data)
@@ -32,6 +32,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None):
         )
         plt.axis("off")
         plt.colorbar()
+    plt.suptitle(title, fontsize=30)
     plt.tight_layout()
     plt.show()
 
