@@ -61,7 +61,7 @@ def reconstruct(fn_img, fn_model, scale, fnhr=None, nbit=16, nchan=1):
 
     print(datalr.shape)
 
-    datasr = resolve16(model, tf.expand_dims(datalr, axis=0), nbit=nbit)[0]
+    output, datasr = resolve16(model, tf.expand_dims(datalr, axis=0), nbit=nbit)[0]
     datasr = datasr.numpy()
     return datalr, datasr, datahr
 
