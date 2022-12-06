@@ -32,9 +32,11 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title=''):
         )
         plt.axis("off")
         plt.colorbar()
-    plt.suptitle(title, fontsize=30)
     plt.tight_layout()
+    plt.subplots_adjust(top=0.85)
+    plt.suptitle(title, fontsize=30)
     plt.show()
+
 
 
 def plot_reconstruction(
