@@ -267,7 +267,7 @@ def wdsr_b_uq_norelu_mc(
 #     return Model(x_in, x, name="wdsr_b_uq_mc")
 
 
-def dropout_mc_wrapper(x, rate=0.05):
+def dropout_mc_wrapper(x, rate=0.01):
     # print('Dropout being used!')
     return tf.nn.dropout(x, rate)
 
