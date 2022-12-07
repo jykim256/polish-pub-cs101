@@ -1,6 +1,6 @@
 import tensorflow as tf
 import tensorflow_addons as tfa
-from tensorflow.python.keras.layers import Add, Conv2D, Input, Lambda, ReLU
+from tensorflow.python.keras.layers import Add, Conv2D, Input, Lambda, ReLU, SpatialDropout2D
 from tensorflow.python.keras.models import Model
 
 from model.common import decenter, denormalize, normalize, pixel_shuffle
@@ -210,7 +210,7 @@ def wdsr_b_uq_norelu_mc(
 def dropout_mc_wrapper(x, rate=0.01):
     # print('Dropout being used!')
     # return tf.nn.dropout(x, rate)
-    return tf.nn.SpatialDropout(x, rate)
+    return SpatialDropout2D(x, rate)
 
 
 def res_block_b(x_in, num_filters, expansion, kernel_size, scaling):
