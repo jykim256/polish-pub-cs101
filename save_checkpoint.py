@@ -4,8 +4,7 @@ from optparse import OptionParser
 import numpy as np
 import tensorflow as tf
 
-from data import RadioSky
-from model.wdsr import wdsr_b, wdsr_b_uq
+from model.wdsr import wdsr_b_uq
 from train import WdsrTrainer
 
 
