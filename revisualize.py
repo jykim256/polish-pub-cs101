@@ -101,7 +101,8 @@ def reconstruct(
             model, tf.expand_dims(datalr, axis=0), nbit=nbit, get_raw=True
         )  # hack
         datasr = datasr.numpy()
-        print("Range: %f - %f" % (np.min(datasr), np.max(datasr)))
+        print("SR Range: %f - %f" % (np.min(datasr[:,:,:,0]), np.max(datasr[:,:,:,0])))
+        print("UQ Range: %f - %f" % (np.min(datasr[:,:,:,1]), np.max(datasr[:,:,:,1])))
         srs.append(datasr)
 
     datasr = np.array(srs)
