@@ -16,7 +16,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
     ):
         if gamma is not None:
             image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_raw, tf.int32), gamma=gamma)
-            minbound, maxbound = tuple(tf.image.adjust_gamma(np.array([int(minbound), int(maxbound)]), gamma=gamma).numpy())
+            minbound, maxbound = tuple(tf.image.adjust_gamma(np.array([float(minbound), float(maxbound)]), gamma=gamma).numpy())
         else:
             image_data = image_data_raw
         if minbound == maxbound:
@@ -32,7 +32,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
             cmap=cmap,
             aspect="auto",
             extent=[0, 1, 0, 1],
-            # interpolation=interpolation
+            interpolation=interpolation
         )
         plt.axis("off")
         plt.colorbar()
