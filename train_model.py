@@ -31,6 +31,7 @@ def main(
     loss=None,
     learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-3, 5e-4]),
     model_struct=wdsr_b_uq_norelu,
+    dropout_rate=0,
 ):
 
     train_loader = RadioSky(
@@ -72,9 +73,12 @@ def main(
         "Note we are assuming the following model checkpoint:",
         f".ckpt/%s" % fnoutweights.strip(".h5"),
     )
-
     current_model = model_struct(
         scale=scale, num_res_blocks=num_res_blocks, nchan=nchan
+    )
+    if dropout_rate:
+        current_model = model_struct(
+        scale=scale, num_res_blocks=num_res_blocks, nchan=nchan, dropout_rate=dropout_rate
     )
     # current_loss = gaussian_normalized_exp
     if loss is None:
