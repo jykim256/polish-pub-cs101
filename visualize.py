@@ -22,7 +22,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
         if minbound == maxbound:
             minbound = np.min(image_data)
             maxbound = np.max(image_data)
-            print(f" {plot_title} minbound = {minbound}, maxbound = {maxbound}")
+        print(f" {plot_title} minbound = {minbound}, maxbound = {maxbound}")
         ax = plt.subplot(num_rows, num_columns, plot_idx + 1)
         plt.title(plot_title, c="k", fontsize=17)
         plt.imshow(
