@@ -3,9 +3,11 @@ import numpy as np
 import tensorflow as tf
 
 
-def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, interpolation=None):
+def plot_dictionary(
+    data, cmap="afmhot", gamma=None, title="", num_columns=3, interpolation=None
+):
     if interpolation is None:
-        interpolation = 'antialiased'
+        interpolation = "antialiased"
     # data is in the following format
     # Dictionary['plot title', (Image, minbound, maxbound)], where Image is a 2D array
     num_plots = len(data)
@@ -18,8 +20,14 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
             minbound = np.min(image_data_raw)
             maxbound = np.max(image_data_raw)
         if gamma is not None:
-            image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_raw, tf.float32), gamma=gamma)
-            minbound, maxbound = tuple(tf.image.adjust_gamma(np.array([float(minbound), float(maxbound)]), gamma=gamma).numpy())
+            image_data = tf.image.adjust_gamma(
+                tf.dtypes.cast(image_data_raw, tf.float32), gamma=gamma
+            )
+            minbound, maxbound = tuple(
+                tf.image.adjust_gamma(
+                    np.array([float(minbound), float(maxbound)]), gamma=gamma
+                ).numpy()
+            )
         else:
             image_data = image_data_raw
         print(f" {plot_title} minbound = {minbound}, maxbound = {maxbound}")
@@ -32,7 +40,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
             cmap=cmap,
             aspect="auto",
             extent=[0, 1, 0, 1],
-            interpolation=interpolation
+            interpolation=interpolation,
         )
         plt.axis("off")
         plt.colorbar()
@@ -40,7 +48,6 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
     plt.subplots_adjust(top=0.85)
     plt.suptitle(title, fontsize=30)
     plt.show()
-
 
 
 def plot_reconstruction(
