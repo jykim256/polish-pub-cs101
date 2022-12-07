@@ -30,6 +30,7 @@ def main(
     train_steps=10000,
     loss=None,
     learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-3, 5e-4]),
+    model_struct=wdsr_b_uq_norelu,
 ):
 
     train_loader = RadioSky(
@@ -72,7 +73,7 @@ def main(
         f".ckpt/%s" % fnoutweights.strip(".h5"),
     )
 
-    wdsr_b_uq_model = wdsr_b_uq_norelu(
+    current_model = model_struct(
         scale=scale, num_res_blocks=num_res_blocks, nchan=nchan
     )
     # current_loss = gaussian_normalized_exp
@@ -80,12 +81,12 @@ def main(
         loss = gaussian_normalized_exp
     print("-" * 50)
     print("Model Architecture:")
-    print(wdsr_b_uq_model.summary())
+    print(current_model.summary())
     print("-" * 50)
     print("\n\nLoss function used: ", loss.__name__)
     print("\n\n" + "-" * 50)
     trainer = WdsrTrainer(
-        model=wdsr_b_uq_model,
+        model=current_model,
         loss=loss,
         checkpoint_dir=f".ckpt/%s" % fnoutweights.strip(".h5"),
         learning_rate=learning_rate,
