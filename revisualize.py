@@ -96,13 +96,13 @@ def reconstruct(
         datalr = datalr[:, :, :, 0]
     srs = []
     for idx in range(iter):
-        print("Reconstructing image #%d" % idx)
+        print("Reconstructing image #%d" % (idx + 1))
         output, datasr = resolve16(
             model, tf.expand_dims(datalr, axis=0), nbit=nbit, get_raw=True
         )  # hack
         datasr = datasr.numpy()
-        print("SR Range: %f - %f" % (np.min(datasr[:,:,:,0]), np.max(datasr[:,:,:,0])))
-        print("UQ Range: %f - %f" % (np.min(datasr[:,:,:,1]), np.max(datasr[:,:,:,1])))
+        print("SR Range: %f , %f" % (np.min(datasr[:,:,:,0]), np.max(datasr[:,:,:,0])))
+        print("UQ Range: %f , %f" % (np.min(datasr[:,:,:,1]), np.max(datasr[:,:,:,1])))
         srs.append(datasr)
 
     datasr = np.array(srs)
