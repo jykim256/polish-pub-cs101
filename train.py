@@ -149,8 +149,8 @@ class WdsrTrainer:
             hr = tf.cast(hr, tf.float32)
             sr = self.checkpoint.model(lr, training=True)
             if show_range:
-                print("SR Range: %f , %f" % (np.min(sr[:,:,:,0].eval()), np.max(sr[:,:,:,0].eval())))
-                print("UQ Range: %f , %f" % (np.min(sr[:,:,:,1].eval()), np.max(sr[:,:,:,1].eval())))
+                print("SR Range: ", (tf.reduce_min(sr[:,:,:,0]), tf.reduce_max(sr[:,:,:,0])))
+                print("UQ Range: ",(tf.reduce_min(sr[:,:,:,1]), tf.reduce_max(sr[:,:,:,1])))
             loss_value = self.loss(sr, hr)
 
         gradients = tape.gradient(loss_value, self.checkpoint.model.trainable_variables)
