@@ -170,8 +170,7 @@ def wdsr_b_uq_norelu_mc(
     #    m = conv2d_weightnorm(num_filters, 3, padding='same')(x)
     m = conv2d_weightnorm(num_filters, nchan, padding="same")(x)
     for i in range(num_res_blocks):
-        m = dropout_mc_wrapper(m)
-        m = res_block_b(
+        m = res_block_b_dropout(
             m,
             num_filters,
             res_block_expansion,
