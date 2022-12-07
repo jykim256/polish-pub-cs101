@@ -189,7 +189,7 @@ def wdsr_b_uq_norelu_mc(
         padding="same",
         name=f"conv2d_main_scale_{scale}",
     )(m)
-    m = dropout_mc_wrapper(m, rate=dropout_rate)
+    # m = dropout_mc_wrapper(m, rate=dropout_rate)
     m = Lambda(pixel_shuffle(scale))(m)
 
     # skip branch
@@ -199,7 +199,7 @@ def wdsr_b_uq_norelu_mc(
         padding="same",
         name=f"conv2d_skip_scale_{scale}",
     )(x)
-    s = dropout_mc_wrapper(s, rate=dropout_rate)
+    # s = dropout_mc_wrapper(s, rate=dropout_rate)
     s = Lambda(pixel_shuffle(scale))(s)
 
     x = Add()([m, s])
