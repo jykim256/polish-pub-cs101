@@ -41,7 +41,7 @@ plt.rcParams.update(
 
 
 def reconstruct(
-    fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16, regular_image=False
+    fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16, regular_image=False, dropout_rate = None
 ):
     if iter is None:
         iter = 1
@@ -76,6 +76,8 @@ def reconstruct(
         datahr = None
     print("Loading model from ", fn_model)
     model = model_struct(scale=scale, num_res_blocks=32)
+    if dropout_rate:
+        model = model_struct(scale=scale, num_res_blocks=32, dropout_rate = dropout_rate)
     model.load_weights(fn_model)
     print("Model loaded")
     datalr = datalr[:, :, None]

@@ -161,7 +161,9 @@ def wdsr_b_uq_norelu_mc(
     res_block_scaling=None,
     nchan=1,
     output_chan=2,
+    dropout_rate=0
 ):
+    print('DROP OUT RATE: ', dropout_rate)
 
     x_in = Input(shape=(None, None, nchan))
     x = Lambda(normalize)(x_in)
@@ -176,15 +178,16 @@ def wdsr_b_uq_norelu_mc(
             res_block_expansion,
             kernel_size=3,
             scaling=res_block_scaling,
+            dropout_rate=dropout_rate,
         )
-    m = dropout_mc_wrapper(m)
+    m = dropout_mc_wrapper(m, rate=dropout_rate)
     m = conv2d_weightnorm(
         output_chan * nchan * scale**2,
         3,
         padding="same",
         name=f"conv2d_main_scale_{scale}",
     )(m)
-    m = dropout_mc_wrapper(m)
+    m = dropout_mc_wrapper(m, rate=dropout_rate)
     m = Lambda(pixel_shuffle(scale))(m)
 
     # skip branch
@@ -194,7 +197,7 @@ def wdsr_b_uq_norelu_mc(
         padding="same",
         name=f"conv2d_skip_scale_{scale}",
     )(x)
-    s = dropout_mc_wrapper(s)
+    s = dropout_mc_wrapper(s, rate=dropout_rate)
     s = Lambda(pixel_shuffle(scale))(s)
 
     x = Add()([m, s])
