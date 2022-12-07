@@ -210,7 +210,7 @@ def wdsr_b_uq_norelu_mc(
 def dropout_mc_wrapper(x, rate=0.01):
     # print('Dropout being used!')
     # return tf.nn.dropout(x, rate)
-    return SpatialDropout2D(x, rate)
+    return SpatialDropout2D(rate)(x)
 
 
 def res_block_b(x_in, num_filters, expansion, kernel_size, scaling):
