@@ -168,8 +168,7 @@ def wdsr_b_uq_norelu_mc(
 
     # main branch
     #    m = conv2d_weightnorm(num_filters, 3, padding='same')(x)
-    m = dropout_mc_wrapper(x)
-    m = conv2d_weightnorm(num_filters, nchan, padding="same")(m)
+    m = conv2d_weightnorm(num_filters, nchan, padding="same")(x)
     for i in range(num_res_blocks):
         m = dropout_mc_wrapper(m)
         m = res_block_b(
@@ -210,7 +209,7 @@ def wdsr_b_uq_norelu_mc(
 def dropout_mc_wrapper(x, rate=0.01):
     # print('Dropout being used!')
     # return tf.nn.dropout(x, rate)
-    return SpatialDropout2D(rate)(x)
+    return SpatialDropout2D(rate)(x, training=True)
 
 
 def res_block_b(x_in, num_filters, expansion, kernel_size, scaling):
@@ -252,8 +251,7 @@ def res_block_b_dropout(
 def conv2d_weightnorm_dropout(
     filters, kernel_size, padding="same", activation=None, dropout_rate=0.1, **kwargs
 ):
-    x = tfa.layers.WeightNormalization(
+    return (tfa.layers.WeightNormalization(
         Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs),
         data_init=False,
-    )
-    return dropout_mc_wrapper(x, rate=dropout_rate)
+    ))
