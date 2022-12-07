@@ -32,7 +32,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
             cmap=cmap,
             aspect="auto",
             extent=[0, 1, 0, 1],
-            interpolation=interpolation
+            # interpolation=interpolation
         )
         plt.axis("off")
         plt.colorbar()
