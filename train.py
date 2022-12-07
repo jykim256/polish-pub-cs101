@@ -89,10 +89,11 @@ class WdsrTrainer:
         for lr, hr in train_dataset.take(steps - ckpt.step.numpy()):
             ckpt.step.assign_add(1)
             step = ckpt.step.numpy()
-            loss = self.train_step(lr, hr)
-            loss_mean(loss)
             # if there's any issues, make sure it logs it out early
             if step < 20:
+                loss = self.train_step(lr, hr, show_range=True)
+                loss_mean(loss)
+
                 loss_value = loss_mean.result()
                 duration = time.perf_counter() - self.now
                 print(f"{step}/{steps}: loss = {loss_value.numpy():.3f}")
@@ -100,6 +101,10 @@ class WdsrTrainer:
 
                 with train_summary_writer.as_default():
                     tf.summary.scalar("loss", loss_mean.result(), step=step)
+            else:
+                loss = self.train_step(lr, hr)
+                loss_mean(loss)
+
 
             if step % evaluate_every == 0 or step == 20:
                 loss_value = loss_mean.result()
@@ -138,11 +143,14 @@ class WdsrTrainer:
         exit()
 
     @tf.function
-    def train_step(self, lr, hr, gg=1.0):
+    def train_step(self, lr, hr, gg=1.0, show_range=False):
         with tf.GradientTape() as tape:
             lr = tf.cast(lr, tf.float32)
             hr = tf.cast(hr, tf.float32)
             sr = self.checkpoint.model(lr, training=True)
+            if show_range:
+                print("SR Range: %f , %f" % (np.min(sr[:,:,:,0]), np.max(sr[:,:,:,0])))
+                print("UQ Range: %f , %f" % (np.min(sr[:,:,:,1]), np.max(sr[:,:,:,1])))
             loss_value = self.loss(sr, hr)
 
         gradients = tape.gradient(loss_value, self.checkpoint.model.trainable_variables)
