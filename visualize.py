@@ -17,6 +17,7 @@ def plot_dictionary(data, cmap="afmhot", gamma=None, title='', num_columns = 3, 
         if minbound == maxbound:
             minbound = np.min(image_data)
             maxbound = np.max(image_data)
+            print(f" {plot_title} minbound = {minbound}, maxbound = {maxbound}")
         if gamma is not None:
             image_data = tf.image.adjust_gamma(tf.dtypes.cast(image_data_raw, tf.float32), gamma=gamma)
             minbound, maxbound = tuple(tf.image.adjust_gamma(np.array([float(minbound), float(maxbound)]), gamma=gamma).numpy())
