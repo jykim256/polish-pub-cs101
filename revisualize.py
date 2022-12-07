@@ -77,9 +77,15 @@ def reconstruct(
     print("Loading model from ", fn_model)
     model = model_struct(scale=scale, num_res_blocks=32)
     if dropout_rate:
+        print('Loading dropout')
         model = model_struct(scale=scale, num_res_blocks=32, dropout_rate = dropout_rate)
     model.load_weights(fn_model)
     print("Model loaded")
+    for tf_var in model.trainable_weights:
+        # plot a histogram of the tensor values
+        plt.hist(tf_var.numpy().flatten(), bins=100)
+    plt.show()
+
     datalr = datalr[:, :, None]
     # print("datalrshape")
     # print(datalr.shape)
