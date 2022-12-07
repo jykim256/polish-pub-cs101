@@ -149,6 +149,7 @@ class WdsrTrainer:
             hr = tf.cast(hr, tf.float32)
             sr = self.checkpoint.model(lr, training=True)
             if show_range:
+                print(sr.shape)
                 print("SR Range: ", (tf.reduce_min(sr[:,:,:,0]), tf.reduce_max(sr[:,:,:,0])))
                 print("UQ Range: ",(tf.reduce_min(sr[:,:,:,1]), tf.reduce_max(sr[:,:,:,1])))
             loss_value = self.loss(sr, hr)
