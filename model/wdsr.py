@@ -153,6 +153,7 @@ def wdsr_b_uq(
     return Model(x_in, x, name="wdsr_b_uq")
 
 
+
 def wdsr_b_uq_norelu_mc(
     scale,
     num_filters=32,
@@ -161,7 +162,7 @@ def wdsr_b_uq_norelu_mc(
     res_block_scaling=None,
     nchan=1,
     output_chan=2,
-    dropout_rate=0
+    dropout_rate=0,
 ):
     print('DROP OUT RATE: ', dropout_rate)
 
@@ -171,14 +172,15 @@ def wdsr_b_uq_norelu_mc(
     # main branch
     #    m = conv2d_weightnorm(num_filters, 3, padding='same')(x)
     m = conv2d_weightnorm(num_filters, nchan, padding="same")(x)
+    m = dropout_mc_wrapper(m, rate=dropout_rate)
     for i in range(num_res_blocks):
-        m = res_block_b_dropout(
+        m = dropout_mc_wrapper(m, rate=dropout_rate)
+        m = res_block_b(
             m,
             num_filters,
             res_block_expansion,
             kernel_size=3,
             scaling=res_block_scaling,
-            dropout_rate=dropout_rate,
         )
     m = dropout_mc_wrapper(m, rate=dropout_rate)
     m = conv2d_weightnorm(
@@ -206,6 +208,61 @@ def wdsr_b_uq_norelu_mc(
     # x = ReLU()(x)
 
     return Model(x_in, x, name="wdsr_b_uq_norelu_mc")
+
+
+# def wdsr_b_uq_norelu_mc(
+#     scale,
+#     num_filters=32,
+#     num_res_blocks=8,
+#     res_block_expansion=6,
+#     res_block_scaling=None,
+#     nchan=1,
+#     output_chan=2,
+#     dropout_rate=0
+# ):
+#     print('DROP OUT RATE: ', dropout_rate)
+
+#     x_in = Input(shape=(None, None, nchan))
+#     x = Lambda(normalize)(x_in)
+
+#     # main branch
+#     #    m = conv2d_weightnorm(num_filters, 3, padding='same')(x)
+#     m = conv2d_weightnorm(num_filters, nchan, padding="same")(x)
+#     for i in range(num_res_blocks):
+#         m = res_block_b_dropout(
+#             m,
+#             num_filters,
+#             res_block_expansion,
+#             kernel_size=3,
+#             scaling=res_block_scaling,
+#             dropout_rate=dropout_rate,
+#         )
+#     m = dropout_mc_wrapper(m, rate=dropout_rate)
+#     m = conv2d_weightnorm(
+#         output_chan * nchan * scale**2,
+#         3,
+#         padding="same",
+#         name=f"conv2d_main_scale_{scale}",
+#     )(m)
+#     m = dropout_mc_wrapper(m, rate=dropout_rate)
+#     m = Lambda(pixel_shuffle(scale))(m)
+
+#     # skip branch
+#     s = conv2d_weightnorm(
+#         output_chan * nchan * scale**2,
+#         5,
+#         padding="same",
+#         name=f"conv2d_skip_scale_{scale}",
+#     )(x)
+#     s = dropout_mc_wrapper(s, rate=dropout_rate)
+#     s = Lambda(pixel_shuffle(scale))(s)
+
+#     x = Add()([m, s])
+#     # x = Lambda(denormalize)(x)
+#     # x = Lambda(decenter)(x)
+#     # x = ReLU()(x)
+
+#     return Model(x_in, x, name="wdsr_b_uq_norelu_mc")
 
 
 def dropout_mc_wrapper(x, rate=0.1):
