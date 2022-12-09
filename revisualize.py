@@ -7,9 +7,11 @@ import matplotlib.pylab as plt
 import numpy as np
 import tensorflow as tf
 
+import model.wdsr as mwdsr
 from model import resolve16, resolve_single
-from model.wdsr import *
+from model.common import denormalize
 from utils import load_image, plot_sample
+from visualize import plot_dictionary
 
 vminlr = 0
 vmaxlr = 22500
@@ -41,7 +43,15 @@ plt.rcParams.update(
 
 
 def reconstruct(
-    fn_img, fn_model, model_struct, iter, scale, fnhr=None, nbit=16, regular_image=False, dropout_rate = None
+    fn_img,
+    fn_model,
+    model_struct,
+    iter,
+    scale,
+    fnhr=None,
+    nbit=16,
+    regular_image=False,
+    dropout_rate=None,
 ):
     if iter is None:
         iter = 1
@@ -77,8 +87,8 @@ def reconstruct(
     print("Loading model from ", fn_model)
     model = model_struct(scale=scale, num_res_blocks=32)
     if dropout_rate:
-        print('Loading dropout')
-        model = model_struct(scale=scale, num_res_blocks=32, dropout_rate = dropout_rate)
+        print("Loading dropout")
+        model = model_struct(scale=scale, num_res_blocks=32, dropout_rate=dropout_rate)
     model.load_weights(fn_model)
     print("Model loaded")
     # for tf_var in model.trainable_weights:
@@ -101,8 +111,14 @@ def reconstruct(
             model, tf.expand_dims(datalr, axis=0), nbit=nbit, get_raw=True
         )  # hack
         datasr = datasr.numpy()
-        print("SR Range: %f , %f" % (np.min(datasr[:,:,:,0]), np.max(datasr[:,:,:,0])))
-        print("UQ Range: %f , %f" % (np.min(datasr[:,:,:,1]), np.max(datasr[:,:,:,1])))
+        print(
+            "SR Range: %f , %f"
+            % (np.min(datasr[:, :, :, 0]), np.max(datasr[:, :, :, 0]))
+        )
+        print(
+            "UQ Range: %f , %f"
+            % (np.min(datasr[:, :, :, 1]), np.max(datasr[:, :, :, 1]))
+        )
         srs.append(datasr)
 
     datasr = np.array(srs)
@@ -253,7 +269,8 @@ def reconstruct(
     #         )
     #     return mc_data
 
-    # if __name__ == "__main__":
+
+if __name__ == "__main__":
     # Example usage:
     # Generate images on training data:
     # for im in ./images/PSF-nkern64-4x/train/X4/*png;do python generate-hr.py $im ./weights-psf-4x.h5;done
@@ -270,6 +287,7 @@ def reconstruct(
 
     parser.add_option("-f", dest="fnhr", help="high-res file name", default=None)
     parser.add_option("-x", dest="scale", help="spatial rebin factor", default=4)
+    parser.add_option("-d", dest="dropout_rate", help="drop out rate", default=0)
     parser.add_option(
         "-b",
         "--nbit",
@@ -282,15 +300,47 @@ def reconstruct(
 
     options, args = parser.parse_args()
     fn_img, fn_model = args
+    num_mcs = 1
 
     datalr, datasr, datahr = reconstruct(
-        fn_img, fn_model, options.scale, fnhr=options.fnhr, nbit=options.nbit
+        fn_img,
+        fn_model,
+        mwdsr.wdsr_b_uq_norelu,
+        iter=num_mcs,
+        scale=options.scale,
+        fnhr=options.fnhr,
+        nbit=options.nbit,
+        dropout_rate=dropout_rate,
     )
 
-    if datahr is not None:
-        nsub = 3
-    else:
-        nsub = 2
+    raw_reconstruction = datasr[:, :, :, 0]
+    reconstruction = tf.clip_by_value(denormalize(datasr[:, :, :, 0]), 0, 2**16)
+    raw_uncertainty = datasr[:, :, :, 1]
+    uncertainty = (2**16) * (np.exp(raw_uncertainty))
 
-    if options.plotit:
-        plot_reconstruction(datalr, datasr, datahr=datahr, vm=1, nsub=nsub)
+    z_error = tf.math.abs(tf.math.divide((datahr - reconstruction), uncertainty))
+
+    plot_dictionary(
+        {
+            "Dirty Map": ((datalr), 0, 2**10),
+            f"Reconstruction avg n={num_mcs}": (reconstruction, 0, 2**10),
+            "True Sky": ((datahr), 0, 2**10),
+            "-": (np.zeros(uncertainty.shape), -2, -1),
+            f"Uncertainty avg n={num_mcs}": (uncertainty, 0, 2**10),
+            # f"LOG Uncertainty avg n={num_mcs}": (raw_uncertainty, 0, 0),
+            f"Error / Uncertainty": (z_error, 0, 2**10),
+            # "--": (np.zeros(uncertainty.shape), -2, -1),
+            "LOG 1 +  Dirty Map": ((np.log(1 + datalr)), 0, 0),
+            f"LOG 1 +  Reconstruction avg n={num_mcs}": (
+                np.log(1 + reconstruction),
+                0,
+                0,
+            ),
+            "LOG 1 +  True Sky": ((np.log(1 + datahr)), 0, 0),
+            f"Z-Score of Error": (z_error, 0, 100),
+            f"LOG Uncertainty avg n={num_mcs}": (np.log(1 + uncertainty), 0, 11.0903),
+            # f"Z-norm of Error": (z_norm, 0, 2**2),
+        },
+        title=f"{fn_img}\n@ {fn_model}",
+        interpolation="none",
+    )

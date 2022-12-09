@@ -105,7 +105,6 @@ class WdsrTrainer:
                 loss = self.train_step(lr, hr)
                 loss_mean(loss)
 
-
             if step % evaluate_every == 0 or step == 20:
                 loss_value = loss_mean.result()
                 loss_mean.reset_states()

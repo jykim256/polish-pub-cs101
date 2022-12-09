@@ -1,6 +1,13 @@
 import tensorflow as tf
 import tensorflow_addons as tfa
-from tensorflow.python.keras.layers import Add, Conv2D, Input, Lambda, ReLU, SpatialDropout2D
+from tensorflow.python.keras.layers import (
+    Add,
+    Conv2D,
+    Input,
+    Lambda,
+    ReLU,
+    SpatialDropout2D,
+)
 from tensorflow.python.keras.models import Model
 
 from model.common import decenter, denormalize, normalize, pixel_shuffle
@@ -153,7 +160,6 @@ def wdsr_b_uq(
     return Model(x_in, x, name="wdsr_b_uq")
 
 
-
 def wdsr_b_uq_norelu_mc(
     scale,
     num_filters=32,
@@ -164,7 +170,7 @@ def wdsr_b_uq_norelu_mc(
     output_chan=2,
     dropout_rate=0,
 ):
-    print('DROP OUT RATE: ', dropout_rate)
+    print("DROP OUT RATE: ", dropout_rate)
 
     x_in = Input(shape=(None, None, nchan))
     x = Lambda(normalize)(x_in)
@@ -310,7 +316,7 @@ def res_block_b_dropout(
 def conv2d_weightnorm_dropout(
     filters, kernel_size, padding="same", activation=None, dropout_rate=0.1, **kwargs
 ):
-    return (tfa.layers.WeightNormalization(
+    return tfa.layers.WeightNormalization(
         Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs),
         data_init=False,
-    ))
+    )

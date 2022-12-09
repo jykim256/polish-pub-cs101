@@ -78,8 +78,11 @@ def main(
     )
     if dropout_rate:
         current_model = model_struct(
-        scale=scale, num_res_blocks=num_res_blocks, nchan=nchan, dropout_rate=dropout_rate
-    )
+            scale=scale,
+            num_res_blocks=num_res_blocks,
+            nchan=nchan,
+            dropout_rate=dropout_rate,
+        )
     # current_loss = gaussian_normalized_exp
     if loss is None:
         loss = gaussian_normalized_exp
