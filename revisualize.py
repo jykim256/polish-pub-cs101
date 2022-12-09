@@ -285,7 +285,7 @@ if __name__ == "__main__":
                                    and save output.",
     )
 
-    parser.add_option("-f", dest="fnhr", help="high-res file name", default=None)
+    parser.add_option("-f", dest="fnhr", help="high-res file name", default='None')
     parser.add_option("-x", dest="scale", help="spatial rebin factor", default=4)
     parser.add_option("-d", dest="dropout_rate", help="drop out rate", default=0)
     parser.add_option(
@@ -296,7 +296,6 @@ if __name__ == "__main__":
         help="number of bits in image",
         default=16,
     )
-    parser.add_option("-p", "--plotit", dest="plotit", action="store_true", help="plot")
 
     options, args = parser.parse_args()
     fn_img, fn_model = args
@@ -310,8 +309,8 @@ if __name__ == "__main__":
         scale=options.scale,
         fnhr=options.fnhr,
         nbit=options.nbit,
-        dropout_rate=dropout_rate,
-    )
+        dropout_rate=options.dropout_rate,
+    )  # type: ignore
 
     raw_reconstruction = datasr[:, :, :, 0]
     reconstruction = tf.clip_by_value(denormalize(datasr[:, :, :, 0]), 0, 2**16)
